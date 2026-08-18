@@ -27,11 +27,11 @@ Single project, per plan.md's Project Structure: `src/domain/`, `src/slices/<com
 
 **Purpose**: Project initialization
 
-- [ ] T001 Initialize the Node/TypeScript project: `package.json`, `tsconfig.json`, and dependencies
+- [X] T001 Initialize the Node/TypeScript project: `package.json`, `tsconfig.json`, and dependencies
       `@event-driven-io/emmett` and `vitest` (dev), per plan.md's Technical Context, at repo root
       of `JobApplicationTracker/`
-- [ ] T002 [P] Configure Vitest (`vitest.config.ts`) to discover `src/**/*.spec.ts`
-- [ ] T003 [P] Configure TypeScript strictness (`strict: true` in `tsconfig.json`) — no runtime
+- [X] T002 [P] Configure Vitest (`vitest.config.ts`) to discover `src/**/*.spec.ts`
+- [X] T003 [P] Configure TypeScript strictness (`strict: true` in `tsconfig.json`) — no runtime
       lint/format tooling beyond this; keep Setup minimal per constitution Principle IV (YAGNI)
 
 ---
@@ -44,15 +44,15 @@ requires (not business/handler logic), so it does not violate Principle III.
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T004 [P] Define the `Event` type union (`ApplicationSubmitted`, `InterviewScheduled`,
+- [X] T004 [P] Define the `Event` type union (`ApplicationSubmitted`, `InterviewScheduled`,
       `InterviewCompleted`, `OfferReceived`, `OfferAccepted`, `OfferDeclined`,
       `ApplicationWithdrawn`, `ApplicationGhosted`) in `src/domain/events.ts`, per data-model.md
-- [ ] T005 [P] Define the `Command` type union (types only, no handler logic) in
+- [X] T005 [P] Define the `Command` type union (types only, no handler logic) in
       `src/domain/commands.ts`, per contracts/commands.md's input shapes
-- [ ] T006 Define the `Application` state shape and its `evolve(state, event)` fold in
+- [X] T006 Define the `Application` state shape and its `evolve(state, event)` fold in
       `src/domain/state.ts` (depends on T004) — implements data-model.md's state-transition table
       and sets `lastActivityAt` on every event (FR-011)
-- [ ] T007 [P] Wire Emmett's `getInMemoryEventStore` in `src/store/event-store.ts`, per
+- [X] T007 [P] Wire Emmett's `getInMemoryEventStore` in `src/store/event-store.ts`, per
       research.md's in-memory-first decision
 
 **Checkpoint**: Foundation ready — user story implementation can now begin
@@ -70,46 +70,46 @@ working record of one application's lifecycle, on its own.
 
 ### Tests for User Story 1 (write FIRST, must fail before implementation)
 
-- [ ] T008 [P] [US1] `deciderSpecification` test for `SubmitApplication` in
+- [X] T008 [P] [US1] `deciderSpecification` test for `SubmitApplication` in
       `src/slices/submit-application/decide.spec.ts` — happy path only (no preconditions per
       contracts/commands.md)
-- [ ] T009 [P] [US1] `deciderSpecification` test for `ScheduleInterview` in
+- [X] T009 [P] [US1] `deciderSpecification` test for `ScheduleInterview` in
       `src/slices/schedule-interview/decide.spec.ts` — covers round 1 (no prior rounds), round
       *N+1* after round *N* has a recorded outcome, rejection when round is out of sequence
       (FR-004), rejection when the prior round's outcome is still pending (FR-004), and rejection
       on a closed application (FR-009)
-- [ ] T010 [P] [US1] `deciderSpecification` test for `RecordInterviewOutcome` in
+- [X] T010 [P] [US1] `deciderSpecification` test for `RecordInterviewOutcome` in
       `src/slices/record-interview-outcome/decide.spec.ts` — covers Passed and Rejected outcomes,
       rejection when no matching pending round exists, and rejection on a closed application
       (FR-009)
-- [ ] T011 [P] [US1] `deciderSpecification` test for `ReceiveOffer` in
+- [X] T011 [P] [US1] `deciderSpecification` test for `ReceiveOffer` in
       `src/slices/receive-offer/decide.spec.ts` — covers success when the latest round outcome is
       Passed, rejection when no interview has occurred, rejection when the latest outcome is
       Rejected (FR-005), and rejection on a closed application (FR-009)
-- [ ] T012 [P] [US1] `deciderSpecification` test for `AcceptOffer` in
+- [X] T012 [P] [US1] `deciderSpecification` test for `AcceptOffer` in
       `src/slices/accept-offer/decide.spec.ts` — covers success with a pending offer, rejection
       with no offer, and rejection on a closed application (FR-009)
-- [ ] T013 [P] [US1] `deciderSpecification` test for `DeclineOffer` in
+- [X] T013 [P] [US1] `deciderSpecification` test for `DeclineOffer` in
       `src/slices/decline-offer/decide.spec.ts` — same coverage shape as T012
-- [ ] T014 [P] [US1] `deciderSpecification` test for `WithdrawApplication` in
+- [X] T014 [P] [US1] `deciderSpecification` test for `WithdrawApplication` in
       `src/slices/withdraw-application/decide.spec.ts` — covers success on any open application
       and rejection on a closed application (FR-009)
 
 ### Implementation for User Story 1
 
-- [ ] T015 [P] [US1] Implement `decide()` for `SubmitApplication` in
+- [X] T015 [P] [US1] Implement `decide()` for `SubmitApplication` in
       `src/slices/submit-application/decide.ts` (depends on T004-T007, T008)
-- [ ] T016 [P] [US1] Implement `decide()` for `ScheduleInterview` in
+- [X] T016 [P] [US1] Implement `decide()` for `ScheduleInterview` in
       `src/slices/schedule-interview/decide.ts` (depends on T004-T007, T009)
-- [ ] T017 [P] [US1] Implement `decide()` for `RecordInterviewOutcome` in
+- [X] T017 [P] [US1] Implement `decide()` for `RecordInterviewOutcome` in
       `src/slices/record-interview-outcome/decide.ts` (depends on T004-T007, T010)
-- [ ] T018 [P] [US1] Implement `decide()` for `ReceiveOffer` in
+- [X] T018 [P] [US1] Implement `decide()` for `ReceiveOffer` in
       `src/slices/receive-offer/decide.ts` (depends on T004-T007, T011)
-- [ ] T019 [P] [US1] Implement `decide()` for `AcceptOffer` in
+- [X] T019 [P] [US1] Implement `decide()` for `AcceptOffer` in
       `src/slices/accept-offer/decide.ts` (depends on T004-T007, T012)
-- [ ] T020 [P] [US1] Implement `decide()` for `DeclineOffer` in
+- [X] T020 [P] [US1] Implement `decide()` for `DeclineOffer` in
       `src/slices/decline-offer/decide.ts` (depends on T004-T007, T013)
-- [ ] T021 [P] [US1] Implement `decide()` for `WithdrawApplication` in
+- [X] T021 [P] [US1] Implement `decide()` for `WithdrawApplication` in
       `src/slices/withdraw-application/decide.ts` (depends on T004-T007, T014)
 
 **Checkpoint**: User Story 1 fully functional — quickstart.md's Story 1 walkthrough passes end to
