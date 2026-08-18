@@ -19,7 +19,7 @@ Deliberately skipped — small, solo, well-understood domain, and the model was 
 
 Don't copy an existing `.NET` constitution template from the vault — wrong stack. Instead, seed it with this in one line:
 
-> Greenfield TypeScript/Node project using Emmett for event sourcing, Vitest for testing, Postgres as the event store once past the in-memory phase. Testing is non-negotiable — every command handler gets a given-when-then test via Emmett's `deciderSpecification` before it's considered done. Decide the architecture outright, no hedging for a nonexistent legacy codebase.
+> Greenfield TypeScript/Node project using Emmett for event sourcing, Vitest for testing, Postgres as the event store once past the in-memory phase. Testing is non-negotiable — every command handler gets a given-when-then test via Emmett's `deciderSpecification` before it's considered done. Vertical slice architecture, granular: one slice per command (not per aggregate/layer), each with its own decider logic, test, and route — no shared catch-all files. Decide the architecture outright, no hedging for a nonexistent legacy codebase.
 
 That's the pattern worth carrying over from prior Spec Kit projects (decisive greenfield choices, a Day-Zero bootstrap gate, testing treated as non-negotiable) — not a document to adapt, just the instinct, restated for this stack.
 

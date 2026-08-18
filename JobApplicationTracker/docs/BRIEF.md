@@ -30,13 +30,24 @@ Deliberately skipped. Event Modeling earns its cost when there's real ambiguity 
 3. **Swap to Postgres** once the logic's solid — the interesting comparison point against Marten and Cratis/Chronicle, both already used elsewhere in the vault.
 4. **Optional**: `@event-driven-io/emmett-expressjs` (or Fastify) for a thin HTTP layer to `curl` against — not required for the event-sourcing practice itself.
 
+## Architecture: granular vertical slices
+
+Evaluated [eventmodelers.ai](https://app.eventmodelers.ai) (`@eventmodelers/cli`) as a way to get vertical-slice code generation — rejected: its codegen reads from a modeled board (`init --stack <name>` / `run` implements slices *marked ready on the board*), and we're deliberately skipping the board (see above). No documented path to feed it a model without the visual canvas.
+
+Instead, vertical slices are hand-structured directly from the model above, one slice per command (not per aggregate or per layer):
+
+- Each command (`SubmitApplication`, `ScheduleInterview`, `RecordInterviewOutcome`, `ReceiveOffer`, `AcceptOffer`, `DeclineOffer`, `WithdrawApplication`, `MarkGhosted`) gets its own folder containing its command handler / decider logic, its `deciderSpecification` given-when-then test, and (once past in-memory) its own route if using `emmett-expressjs`.
+- Granular means no shared "commands.ts" or "handlers.ts" catch-all — each slice is independently readable and testable, consistent with Emmett's decider-per-command shape and the constitution's "every command handler gets a given-when-then test before it's considered done" rule.
+- The read model (`active pipeline` view) and the reactor (ghosting) are each their own slice too, not bundled into the command slices.
+- This should be made explicit in `/speckit.constitution` and `/speckit.plan` so Spec Kit's generated tasks land one-slice-per-task rather than layer-by-layer.
+
 ## Spec Kit plan
 
-Run `/speckit.constitution` first for TS/Node-specific non-negotiables (testing standard — likely Vitest given `deciderSpecification`'s given-when-then shape, no ORM/read-model framework beyond Emmett's own projections) — a genuinely different constitution from [[Spec Kit Constitution Template (Greenfield)|the .NET greenfield template]] already in the vault, worth writing as its own artifact rather than reusing that one. Then `/speckit.specify` and `/speckit.plan` from the model above (most of the actual thinking is already done, so these phases should be fast), `/speckit.tasks`, `/speckit.implement`.
+Run `/speckit.constitution` first for TS/Node-specific non-negotiables (testing standard — likely Vitest given `deciderSpecification`'s given-when-then shape, no ORM/read-model framework beyond Emmett's own projections; vertical slice architecture with granular, per-command slices as above) — a genuinely different constitution from [[Spec Kit Constitution Template (Greenfield)|the .NET greenfield template]] already in the vault, worth writing as its own artifact rather than reusing that one. Then `/speckit.specify` and `/speckit.plan` from the model above (most of the actual thinking is already done, so these phases should be fast), `/speckit.tasks`, `/speckit.implement`.
 
 ## Status
 
-Idea stage, not started — design agreed 2026-08-18. Next step: `specify init` in a fresh repo, `/speckit.constitution`.
+Idea stage, not started — design agreed 2026-08-18; architecture (granular vertical slices, eventmodelers evaluated and skipped) agreed 2026-08-18. Next step: `specify init` in a fresh repo, `/speckit.constitution`.
 
 ## Related
 
