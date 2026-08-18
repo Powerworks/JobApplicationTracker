@@ -47,7 +47,7 @@ Run `/speckit.constitution` first for TS/Node-specific non-negotiables (testing 
 
 ## Status
 
-Idea stage, not started — design agreed 2026-08-18; architecture (granular vertical slices, eventmodelers evaluated and skipped) agreed 2026-08-18. Next step: `specify init` in a fresh repo, `/speckit.constitution`.
+User Story 1 (P1, MVP) implemented 2026-08-18 via the full Spec Kit chain (`/speckit-constitution` → `/speckit-specify` → `/speckit-plan` → `/speckit-tasks` → `/speckit-implement`): all 7 command deciders, the active-pipeline read model (P2), and the ghosting reactor (P3) are done, with 27 passing `deciderSpecification`/Vitest tests (`npm test`) and no shared handler files. See `specs/001-job-application-pipeline/` for the full spec/plan/tasks trail. Not yet done: Postgres event store swap, optional HTTP layer — both deliberately deferred (see `docs/ADRs.md`).
 
 ## Related
 
