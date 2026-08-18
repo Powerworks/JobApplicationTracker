@@ -40,8 +40,10 @@
     Schema request validation (via each route's `schema.body`) — before any decider logic runs.
   - **404 Not Found**: the referenced `applicationId` has no prior events at all. Detected by
     reading current state via `eventStore.aggregateStream(streamName, { evolve, initialState })`
-    *before* invoking `DeciderCommandHandler`, and checking `state.status === "NotSubmitted"`
-    (feature 001's own sentinel for "stream doesn't exist yet" — see `src/domain/state.ts`).
+    *before* invoking `DeciderCommandHandler`, and checking the result's own `streamExists: boolean`
+    flag (discovered during implementation — Emmett's `aggregateStream` already reports this
+    directly, which is simpler and more robust than inferring non-existence from the domain's
+    `NotSubmitted` state, so it's used instead of the originally-planned `state.status` check).
   - **409 Conflict**: every other guard violation (out-of-sequence round, offer without a pass,
     action on an already-closed application) — feature 001/002's existing `IllegalStateError`,
     thrown by the unchanged `decide()` functions and caught at the route boundary.
