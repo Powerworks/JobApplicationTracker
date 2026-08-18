@@ -9,7 +9,7 @@ const now = new Date("2026-08-18T00:00:00.000Z");
 
 const submitted = {
   type: "ApplicationSubmitted" as const,
-  data: { company: "Acme", role: "Engineer" },
+  data: { company: "Acme", role: "Engineer", location: "Remote", employmentType: "Permanent" as const, benefits: [] },
   metadata: { now: now.toISOString() },
 };
 

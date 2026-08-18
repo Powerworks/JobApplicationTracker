@@ -27,25 +27,25 @@ was supplied (quickstart.md).
 
 ### Tests for User Story 1 (write/update FIRST, must fail before implementation)
 
-- [ ] T001 [US1] Add given-when-then cases to
+- [X] T001 [US1] Add given-when-then cases to
       `src/slices/submit-application/decide.spec.ts`: full fields populated (Acceptance Scenario
       1/2), salary omitted (Acceptance Scenario 3), benefits empty (Acceptance Scenario 4) — per
       contracts/submit-application.md's input shape
 
 ### Implementation for User Story 1
 
-- [ ] T002 [P] [US1] Extend `ApplicationSubmitted`'s data shape in `src/domain/events.ts` with
+- [X] T002 [P] [US1] Extend `ApplicationSubmitted`'s data shape in `src/domain/events.ts` with
       `location: string`, `salary?: { amount: number; currency: string }`,
       `employmentType: "Permanent" | "Contract"`, `bonus?: { amount: number; currency: string }`,
       `benefits: string[]`, per data-model.md
-- [ ] T003 [P] [US1] Mirror the same extension onto `SubmitApplication`'s data shape in
+- [X] T003 [P] [US1] Mirror the same extension onto `SubmitApplication`'s data shape in
       `src/domain/commands.ts`
-- [ ] T004 [US1] Extend `SubmittedApplication` in `src/domain/state.ts` with the same five fields,
+- [X] T004 [US1] Extend `SubmittedApplication` in `src/domain/state.ts` with the same five fields,
       and update the `ApplicationSubmitted` case in `evolve()` to carry them into state (depends
       on T002)
-- [ ] T005 [US1] Update `decide()` in `src/slices/submit-application/decide.ts` to pass the five
+- [X] T005 [US1] Update `decide()` in `src/slices/submit-application/decide.ts` to pass the five
       new fields from `command.data` through to the returned event's `data` (depends on T002, T003)
-- [ ] T006 [P] [US1] Update the `ApplicationSubmitted`/`SubmitApplication` test fixtures in
+- [X] T006 [P] [US1] Update the `ApplicationSubmitted`/`SubmitApplication` test fixtures in
       `src/slices/schedule-interview/decide.spec.ts`,
       `src/slices/record-interview-outcome/decide.spec.ts`,
       `src/slices/receive-offer/decide.spec.ts`, `src/slices/accept-offer/decide.spec.ts`,
@@ -53,9 +53,9 @@ was supplied (quickstart.md).
       `src/slices/withdraw-application/decide.spec.ts` to include the now-required
       `location`/`employmentType`/`benefits` fields, so they continue to type-check (depends on
       T002)
-- [ ] T007 [P] [US1] Update the `ApplicationSubmitted` fixtures in
+- [X] T007 [P] [US1] Update the `ApplicationSubmitted` fixtures in
       `src/read-models/active-pipeline/project.spec.ts` the same way (depends on T002)
-- [ ] T008 [P] [US1] Update the `ApplicationSubmitted` fixtures in
+- [X] T008 [P] [US1] Update the `ApplicationSubmitted` fixtures in
       `src/reactors/ghosting/reactor.spec.ts` the same way (depends on T002)
 
 **Checkpoint**: Feature 002 fully functional; feature 001's existing scenarios still pass
@@ -65,9 +65,9 @@ unmodified in behavior, only their fixtures' shape changed
 
 ## Phase 2: Polish & Cross-Cutting Concerns
 
-- [ ] T009 Run `npm test` and `npx tsc --noEmit`; confirm the full suite (feature 001 + 002)
+- [X] T009 Run `npm test` and `npx tsc --noEmit`; confirm the full suite (feature 001 + 002)
       passes with no type errors
-- [ ] T010 Update `docs/BRIEF.md`'s Status section noting feature 002 is complete
+- [X] T010 Update `docs/BRIEF.md`'s Status section noting feature 002 is complete
 
 ---
 

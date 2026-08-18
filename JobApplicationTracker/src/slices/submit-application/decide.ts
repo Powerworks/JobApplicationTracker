@@ -9,7 +9,15 @@ export const decide = (
   const now = command.metadata?.now ?? new Date();
   return {
     type: "ApplicationSubmitted",
-    data: { company: command.data.company, role: command.data.role },
+    data: {
+      company: command.data.company,
+      role: command.data.role,
+      location: command.data.location,
+      salary: command.data.salary,
+      employmentType: command.data.employmentType,
+      bonus: command.data.bonus,
+      benefits: command.data.benefits,
+    },
     metadata: { now: now.toISOString() },
   };
 };

@@ -1,9 +1,21 @@
 import type { Command } from "@event-driven-io/emmett";
-import type { InterviewOutcome } from "./events.js";
+import type {
+  EmploymentType,
+  InterviewOutcome,
+  MonetaryAmount,
+} from "./events.js";
 
 export type SubmitApplication = Command<
   "SubmitApplication",
-  { company: string; role: string }
+  {
+    company: string;
+    role: string;
+    location: string;
+    salary?: MonetaryAmount;
+    employmentType: EmploymentType;
+    bonus?: MonetaryAmount;
+    benefits: string[];
+  }
 >;
 
 export type ScheduleInterview = Command<

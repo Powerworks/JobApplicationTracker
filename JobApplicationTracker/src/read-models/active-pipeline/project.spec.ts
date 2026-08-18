@@ -6,7 +6,13 @@ const at = (isoDate: string) => new Date(isoDate).toISOString();
 
 const submitted = (company: string, role: string, when: string): ApplicationEvent => ({
   type: "ApplicationSubmitted",
-  data: { company, role },
+  data: {
+    company,
+    role,
+    location: "Remote",
+    employmentType: "Permanent",
+    benefits: [],
+  },
   metadata: { now: at(when) },
 });
 

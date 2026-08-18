@@ -1,4 +1,9 @@
-import type { ApplicationEvent, InterviewOutcome } from "./events.js";
+import type {
+  ApplicationEvent,
+  EmploymentType,
+  InterviewOutcome,
+  MonetaryAmount,
+} from "./events.js";
 
 export type ApplicationStatus =
   | "Open"
@@ -25,6 +30,11 @@ export type SubmittedApplication = {
   status: ApplicationStatus;
   company: string;
   role: string;
+  location: string;
+  salary: MonetaryAmount | undefined;
+  employmentType: EmploymentType;
+  bonus: MonetaryAmount | undefined;
+  benefits: string[];
   rounds: InterviewRound[];
   offer: Offer | undefined;
   lastActivityAt: string;
@@ -46,6 +56,11 @@ export const evolve = (
         status: "Open",
         company: event.data.company,
         role: event.data.role,
+        location: event.data.location,
+        salary: event.data.salary,
+        employmentType: event.data.employmentType,
+        bonus: event.data.bonus,
+        benefits: event.data.benefits,
         rounds: [],
         offer: undefined,
         lastActivityAt: event.metadata.now,

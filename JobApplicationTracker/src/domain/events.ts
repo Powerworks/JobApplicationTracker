@@ -2,12 +2,24 @@ import type { Event } from "@event-driven-io/emmett";
 
 export type InterviewOutcome = "Passed" | "Rejected";
 
+export type EmploymentType = "Permanent" | "Contract";
+
+export type MonetaryAmount = { amount: number; currency: string };
+
 /** Every event carries `now` explicitly — Emmett does not auto-stamp business timestamps. */
 export type EventMetadata = { now: string };
 
 export type ApplicationSubmitted = Event<
   "ApplicationSubmitted",
-  { company: string; role: string },
+  {
+    company: string;
+    role: string;
+    location: string;
+    salary?: MonetaryAmount;
+    employmentType: EmploymentType;
+    bonus?: MonetaryAmount;
+    benefits: string[];
+  },
   EventMetadata
 >;
 
