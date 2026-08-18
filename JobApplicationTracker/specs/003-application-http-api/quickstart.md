@@ -8,7 +8,7 @@ automated (in-process, `app.inject()`-based) validation — no server needs to b
 To try it manually instead:
 
 ```bash
-npm run start   # starts the Fastify server (src/http/server.ts), default port per Fastify config
+npm run start   # starts the Fastify server (src/http/server.ts) on port 5000 (emmett-fastify default)
 ```
 
 ## Scenario walkthrough (manual, via curl — mirrors the automated route.spec.ts suites)
@@ -16,52 +16,52 @@ npm run start   # starts the Fastify server (src/http/server.ts), default port p
 ### User Story 1 — pipeline lifecycle over HTTP
 
 ```bash
-curl -s -X POST localhost:3000/applications \
+curl -s -X POST localhost:5000/applications \
   -H 'content-type: application/json' \
   -d '{"company":"Acme","role":"Engineer","location":"Remote","employmentType":"Permanent","benefits":[]}'
 # -> 201 { "applicationId": "..." }
 
-curl -s -X POST localhost:3000/applications/<id>/interviews \
+curl -s -X POST localhost:5000/applications/<id>/interviews \
   -H 'content-type: application/json' -d '{"round":1,"date":"2026-08-20"}'
 # -> 200 {}
 
-curl -s -X POST localhost:3000/applications/<id>/interviews/outcome \
+curl -s -X POST localhost:5000/applications/<id>/interviews/outcome \
   -H 'content-type: application/json' -d '{"round":1,"outcome":"Passed"}'
 # -> 200 {}
 
-curl -s -X POST localhost:3000/applications/<id>/offer \
+curl -s -X POST localhost:5000/applications/<id>/offer \
   -H 'content-type: application/json' -d '{"amount":150000,"deadline":"2026-09-01"}'
 # -> 200 {}
 
-curl -s -X POST localhost:3000/applications/<id>/offer/accept
+curl -s -X POST localhost:5000/applications/<id>/offer/accept
 # -> 200 {}
 
 # Any further request against <id> now:
-curl -s -X POST localhost:3000/applications/<id>/withdraw
+curl -s -X POST localhost:5000/applications/<id>/withdraw
 # -> 409 { "error": "...", "message": "..." }
 ```
 
 ### User Story 2 — active overview over HTTP
 
 ```bash
-curl -s localhost:3000/applications/active
+curl -s localhost:5000/applications/active
 # -> 200 [ { "applicationId": "...", "company": "...", ..., "daysSinceLastActivity": N }, ... ]
 ```
 
 ### User Story 3 — trigger ghosting over HTTP
 
 ```bash
-curl -s -X POST localhost:3000/ghosting/check
+curl -s -X POST localhost:5000/ghosting/check
 # -> 200 { "ghosted": [] }   (or a list of newly-ghosted application IDs)
 ```
 
 ### Error cases
 
 ```bash
-curl -s -X POST localhost:3000/applications -d '{}' -H 'content-type: application/json'
+curl -s -X POST localhost:5000/applications -d '{}' -H 'content-type: application/json'
 # -> 400 (missing required fields)
 
-curl -s -X POST localhost:3000/applications/does-not-exist/withdraw
+curl -s -X POST localhost:5000/applications/does-not-exist/withdraw
 # -> 404
 ```
 

@@ -81,6 +81,25 @@
 - **Alternatives considered**: Starting a real server and using an HTTP client library in tests
   (rejected — slower, needs port management, no benefit for what's being verified).
 
+## Decision: An explicit `applicationId` registry for cross-stream reads (US2/US3)
+
+- **Decision**: `src/http/application-registry.ts` holds a simple in-memory `Set<string>` of every
+  `applicationId` created via `POST /applications`, populated by that route. The active-pipeline
+  and ghosting-check routes iterate this registry and call `eventStore.readStream(id)` per ID to
+  build the `Record<string, ApplicationEvent[]>` that `project()`/`ghostSilentApplications()`
+  already expect, unchanged.
+- **Rationale**: Discovered during implementation that Emmett's `InMemoryEventStore` has no
+  built-in "list all stream IDs" query — its `database` property is for document/projection
+  storage (`InMemoryDatabase.collection(...)`), not stream enumeration. Rather than working around
+  the store's API or introducing a projection-store dependency for a single-process, single-user
+  tool, a plain in-memory registry is the simplest thing that works (constitution Principle IV,
+  YAGNI) — and it's a problem that disappears entirely once Postgres (a real "list applications"
+  query) replaces the in-memory store later, so it isn't worth over-engineering now.
+- **Alternatives considered**: Emmett's `inMemoryMultiStreamProjection`/projection-store machinery
+  (rejected — meant for building read models that project *into* the `InMemoryDatabase`, which is
+  more machinery than a single ID list needs); scanning the store's internals directly (rejected —
+  not part of its public API, would break on upgrade).
+
 ## Decision: One shared in-memory event store instance per running process
 
 - **Decision**: `src/store/event-store.ts`'s `createEventStore()` is called once in

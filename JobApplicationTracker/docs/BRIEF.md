@@ -51,7 +51,9 @@ User Story 1 (P1, MVP) implemented 2026-08-18 via the full Spec Kit chain (`/spe
 
 Feature 002 (richer job posting details on submission — location, salary, employment type, bonus, benefits) implemented 2026-08-18 via the same chain, extending `SubmitApplication` in place rather than adding a new command. See `specs/002-application-job-details/`. 29 passing `deciderSpecification`/Vitest tests total (`npm test`).
 
-Not yet done: Postgres event store swap, optional HTTP layer and frontend — both deliberately deferred (see `docs/ADRs.md`); the HTTP layer/frontend was explicitly held until this data-model feature landed.
+Feature 003 (HTTP API, Fastify) implemented 2026-08-18 via the same chain: all 9 endpoints (7 commands, the active-pipeline overview, and an on-demand ghosting-check trigger) reachable over HTTP, each route co-located inside its owning slice/read-model/reactor with no shared `routes.ts`. `POST /applications` generates the application ID; `crypto.randomUUID()` is used, no new ID-generation dependency. Error mapping is a pure translation layer over the existing decider guards (400 malformed input, 404 unknown application, 409 guard violation) — no business logic changed. See `specs/003-application-http-api/`. 58 passing tests total (`npm test`); run `npm run start` for a live server on port 5000.
+
+Not yet done: Postgres event store swap, frontend — both deliberately deferred (see `docs/ADRs.md`).
 
 ## Related
 

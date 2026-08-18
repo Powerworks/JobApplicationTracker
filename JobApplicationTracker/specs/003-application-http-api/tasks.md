@@ -117,16 +117,16 @@ then confirm a single `app.inject()` GET returns exactly the open ones, most-idl
 
 ### Tests for User Story 2 (write FIRST, must fail before implementation)
 
-- [ ] T022 [US2] `route.spec.ts` for `GET /applications/active` in
+- [X] T022 [US2] `route.spec.ts` for `GET /applications/active` in
       `src/read-models/active-pipeline/route.spec.ts` — most-idle-first ordering, closed
       applications excluded, empty list when no applications exist
 
 ### Implementation for User Story 2
 
-- [ ] T023 [US2] Implement `route.ts` for `GET /applications/active` in
+- [X] T023 [US2] Implement `route.ts` for `GET /applications/active` in
       `src/read-models/active-pipeline/route.ts`: reads all streams from the shared store, calls
       the existing `project()` unchanged, returns 200 (depends on T004, T022)
-- [ ] T024 [US2] Register the route plugin in `src/http/app.ts` (depends on T023)
+- [X] T024 [US2] Register the route plugin in `src/http/app.ts` (depends on T023)
 
 **Checkpoint**: User Stories 1 and 2 both work independently over HTTP
 
@@ -141,17 +141,17 @@ check via `app.inject()`, confirm it's absent from a subsequent active-overview 
 
 ### Tests for User Story 3 (write FIRST, must fail before implementation)
 
-- [ ] T025 [US3] `route.spec.ts` for `POST /ghosting/check` in
+- [X] T025 [US3] `route.spec.ts` for `POST /ghosting/check` in
       `src/reactors/ghosting/route.spec.ts` — returns ghosted IDs when applicable, succeeds with
       an empty list when nothing is silent
 
 ### Implementation for User Story 3
 
-- [ ] T026 [US3] Implement `route.ts` for `POST /ghosting/check` in
+- [X] T026 [US3] Implement `route.ts` for `POST /ghosting/check` in
       `src/reactors/ghosting/route.ts`: reads all streams, calls the existing
       `ghostSilentApplications()` unchanged, appends each resulting `ApplicationGhosted` event to
       its stream, returns the ghosted IDs (depends on T004, T025)
-- [ ] T027 [US3] Register the route plugin in `src/http/app.ts` (depends on T026)
+- [X] T027 [US3] Register the route plugin in `src/http/app.ts` (depends on T026)
 
 **Checkpoint**: All three user stories independently functional over HTTP
 
@@ -159,11 +159,11 @@ check via `app.inject()`, confirm it's absent from a subsequent active-overview 
 
 ## Phase 6: Polish & Cross-Cutting Concerns
 
-- [ ] T028 Run quickstart.md's full curl walkthrough manually against `npm run start`, confirming
+- [X] T028 Run quickstart.md's full curl walkthrough manually against `npm run start`, confirming
       it matches the automated `app.inject()` suites
-- [ ] T029 [P] Verify no shared `routes.ts` exists and every route file lives inside its owning
+- [X] T029 [P] Verify no shared `routes.ts` exists and every route file lives inside its owning
       slice/read-model/reactor folder (constitution Principle III compliance)
-- [ ] T030 [P] Update `docs/BRIEF.md`'s Status section noting feature 003 is complete
+- [X] T030 [P] Update `docs/BRIEF.md`'s Status section noting feature 003 is complete
 
 ---
 
