@@ -102,11 +102,21 @@ export const evolve = (
     }
     case "OfferAccepted": {
       if (state.status === "NotSubmitted") return state;
-      return { ...state, status: "Accepted", lastActivityAt: event.metadata.now };
+      return {
+        ...state,
+        status: "Accepted",
+        offer: state.offer && { ...state.offer, decision: "Accepted" },
+        lastActivityAt: event.metadata.now,
+      };
     }
     case "OfferDeclined": {
       if (state.status === "NotSubmitted") return state;
-      return { ...state, status: "Declined", lastActivityAt: event.metadata.now };
+      return {
+        ...state,
+        status: "Declined",
+        offer: state.offer && { ...state.offer, decision: "Declined" },
+        lastActivityAt: event.metadata.now,
+      };
     }
     case "ApplicationWithdrawn": {
       if (state.status === "NotSubmitted") return state;
