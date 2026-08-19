@@ -1,6 +1,8 @@
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import fastifyStatic from "@fastify/static";
+import fastifySwagger from "@fastify/swagger";
+import fastifySwaggerUi from "@fastify/swagger-ui";
 import { getApplication } from "@event-driven-io/emmett-fastify";
 import type { FastifyInstance } from "fastify";
 import type { PostgresEventStore } from "@event-driven-io/emmett-postgresql";
@@ -34,16 +36,39 @@ export const buildApp = (): Promise<FastifyInstance> =>
       app.decorate("eventStore", eventStore);
       app.decorate("applicationIndex", createApplicationIndex(eventStore));
       app.setErrorHandler(errorHandler);
-      app.register(fastifyStatic, { root: publicDir });
-      registerSubmitApplicationRoute(app);
-      registerScheduleInterviewRoute(app);
-      registerRecordInterviewOutcomeRoute(app);
-      registerReceiveOfferRoute(app);
-      registerAcceptOfferRoute(app);
-      registerDeclineOfferRoute(app);
-      registerWithdrawApplicationRoute(app);
-      registerActivePipelineRoute(app);
-      registerApplicationDetailRoute(app);
-      registerGhostingCheckRoute(app);
+
+      // emmett-fastify's registerRoutes callback is called without being awaited, so
+      // fastify.register(fastifySwagger, ...) alone races the route registrations below (its
+      // onRoute hook may not be attached yet when they run, silently producing an empty OpenAPI
+      // document). `.after()` guarantees swagger has fully booted before any route is declared.
+      app
+        .register(fastifySwagger, {
+          openapi: {
+            info: {
+              title: "Job Application Tracker API",
+              description:
+                "HTTP API for the job application pipeline tracker (features 001-005).",
+              version: "0.1.0",
+            },
+            tags: [
+              { name: "Applications", description: "Submit and progress applications" },
+              { name: "Overview", description: "The active pipeline and ghosting check" },
+            ],
+          },
+        })
+        .after(() => {
+          app.register(fastifySwaggerUi, { routePrefix: "/documentation" });
+          app.register(fastifyStatic, { root: publicDir });
+          registerSubmitApplicationRoute(app);
+          registerScheduleInterviewRoute(app);
+          registerRecordInterviewOutcomeRoute(app);
+          registerReceiveOfferRoute(app);
+          registerAcceptOfferRoute(app);
+          registerDeclineOfferRoute(app);
+          registerWithdrawApplicationRoute(app);
+          registerActivePipelineRoute(app);
+          registerApplicationDetailRoute(app);
+          registerGhostingCheckRoute(app);
+        });
     },
   });

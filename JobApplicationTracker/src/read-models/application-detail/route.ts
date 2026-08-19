@@ -1,6 +1,10 @@
 import type { FastifyInstance } from "fastify";
 import type { ApplicationEvent } from "../../domain/events.js";
 import { requireApplicationExists } from "../../http/require-application.js";
+import {
+  applicationStateSchema,
+  errorResponseSchema,
+} from "../../http/openapi-schemas.js";
 import { project } from "./project.js";
 
 const paramsSchema = {
@@ -14,7 +18,17 @@ type Params = { applicationId: string };
 export const registerApplicationDetailRoute = (app: FastifyInstance): void => {
   app.get<{ Params: Params }>(
     "/applications/:applicationId",
-    { schema: { params: paramsSchema } },
+    {
+      schema: {
+        tags: ["Applications"],
+        summary: "Get a single application's full current state (open or closed)",
+        params: paramsSchema,
+        response: {
+          200: applicationStateSchema,
+          404: errorResponseSchema,
+        },
+      },
+    },
     async (request, reply) => {
       const { applicationId } = request.params;
       await requireApplicationExists(app.eventStore, applicationId);

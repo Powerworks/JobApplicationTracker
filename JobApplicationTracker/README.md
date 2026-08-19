@@ -63,7 +63,13 @@ public/               # The frontend: plain HTML/CSS/JS, no framework, no build 
 ## API
 
 Fastify HTTP API exposing every command, the active-pipeline overview, and an on-demand
-ghosting-check trigger. Full endpoint reference:
+ghosting-check trigger.
+
+**Interactive docs**: with the server running, open `http://localhost:5000/documentation` for a
+Swagger UI generated from the routes' own schemas (raw OpenAPI document at
+`/documentation/json`).
+
+Prose reference:
 [`specs/003-application-http-api/contracts/http-api.md`](specs/003-application-http-api/contracts/http-api.md)
 (plus the detail endpoint added in
 [`specs/004-application-tracker-frontend/contracts/application-detail-endpoint.md`](specs/004-application-tracker-frontend/contracts/application-detail-endpoint.md)).

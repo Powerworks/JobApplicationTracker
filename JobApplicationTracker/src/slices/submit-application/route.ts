@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { DeciderCommandHandler } from "@event-driven-io/emmett";
 import type { FastifyInstance } from "fastify";
 import { evolve, initialState } from "../../domain/state.js";
+import { errorResponseSchema } from "../../http/openapi-schemas.js";
 import { decide } from "./decide.js";
 
 const handle = DeciderCommandHandler({ decide, evolve, initialState });
@@ -41,7 +42,20 @@ type SubmitApplicationBody = {
 export const registerSubmitApplicationRoute = (app: FastifyInstance): void => {
   app.post<{ Body: SubmitApplicationBody }>(
     "/applications",
-    { schema: { body: bodySchema } },
+    {
+      schema: {
+        tags: ["Applications"],
+        summary: "Submit a new job application",
+        body: bodySchema,
+        response: {
+          201: {
+            type: "object",
+            properties: { applicationId: { type: "string" } },
+          },
+          400: errorResponseSchema,
+        },
+      },
+    },
     async (request, reply) => {
       const applicationId = randomUUID();
       await handle(app.eventStore, applicationId, {
