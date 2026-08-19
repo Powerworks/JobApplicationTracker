@@ -15,7 +15,7 @@ export const registerGhostingCheckRoute = (app: FastifyInstance): void => {
   app.post<{ Body: Body }>("/ghosting/check", async (request, reply) => {
     const now = request.body?.now ? new Date(request.body.now) : new Date();
     const streams: Record<string, ApplicationEvent[]> = {};
-    for (const applicationId of app.applicationRegistry.list()) {
+    for (const applicationId of await app.applicationIndex.list()) {
       const { events } = await app.eventStore.readStream<ApplicationEvent>(applicationId);
       streams[applicationId] = events.map((event) => ({
         type: event.type,

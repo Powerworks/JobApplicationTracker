@@ -10,6 +10,8 @@
 
 **Consequences**: State is derived by folding events, not stored directly — reads require a projection (the `active pipeline` read model) rather than a simple table query. This is the intended practice, not overhead to minimize. Testing via `deciderSpecification` is non-negotiable, per the seeded Spec Kit constitution.
 
+**Update (2026-08-19)**: The deferred "later swap to Postgres" half of this decision is now fulfilled — feature 005 (`specs/005-postgres-event-store/`) swapped `src/store/event-store.ts` to `@event-driven-io/emmett-postgresql`, verified with zero regressions across the full existing test suite plus a real server-restart durability check. See that feature's ADR-equivalent decisions in its own `research.md` for the details (store choice, migration strategy, the persisted applications-index replacement for the old in-memory registry, and the testcontainer-based test strategy).
+
 ---
 
 ## ADR 2: No Event Modeling board

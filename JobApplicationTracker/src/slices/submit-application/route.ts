@@ -49,7 +49,7 @@ export const registerSubmitApplicationRoute = (app: FastifyInstance): void => {
         data: request.body,
         metadata: { now: new Date() },
       });
-      app.applicationRegistry.register(applicationId);
+      await app.applicationIndex.register(applicationId);
       reply.code(201).send({ applicationId });
     },
   );

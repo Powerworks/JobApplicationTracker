@@ -3,10 +3,10 @@ import path from "node:path";
 import fastifyStatic from "@fastify/static";
 import { getApplication } from "@event-driven-io/emmett-fastify";
 import type { FastifyInstance } from "fastify";
-import type { InMemoryEventStore } from "@event-driven-io/emmett";
+import type { PostgresEventStore } from "@event-driven-io/emmett-postgresql";
 import { createEventStore } from "../store/event-store.js";
+import { createApplicationIndex, type ApplicationIndex } from "../store/application-index.js";
 import { errorHandler } from "./errors.js";
-import { createApplicationRegistry, type ApplicationRegistry } from "./application-registry.js";
 import { registerSubmitApplicationRoute } from "../slices/submit-application/route.js";
 import { registerScheduleInterviewRoute } from "../slices/schedule-interview/route.js";
 import { registerRecordInterviewOutcomeRoute } from "../slices/record-interview-outcome/route.js";
@@ -20,8 +20,8 @@ import { registerGhostingCheckRoute } from "../reactors/ghosting/route.js";
 
 declare module "fastify" {
   interface FastifyInstance {
-    eventStore: InMemoryEventStore;
-    applicationRegistry: ApplicationRegistry;
+    eventStore: PostgresEventStore;
+    applicationIndex: ApplicationIndex;
   }
 }
 
@@ -30,8 +30,9 @@ const publicDir = path.join(path.dirname(fileURLToPath(import.meta.url)), "../..
 export const buildApp = (): Promise<FastifyInstance> =>
   getApplication({
     registerRoutes: (app: FastifyInstance) => {
-      app.decorate("eventStore", createEventStore());
-      app.decorate("applicationRegistry", createApplicationRegistry());
+      const eventStore = createEventStore();
+      app.decorate("eventStore", eventStore);
+      app.decorate("applicationIndex", createApplicationIndex(eventStore));
       app.setErrorHandler(errorHandler);
       app.register(fastifyStatic, { root: publicDir });
       registerSubmitApplicationRoute(app);

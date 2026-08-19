@@ -24,12 +24,16 @@ createApplicationIndex(store: PostgresEventStore): ApplicationIndex
 type ApplicationIndex = {
   register: (applicationId: string) => Promise<void>;
   list: () => Promise<string[]>;
+  close: () => Promise<void>;
 };
 ```
 
 - `register`: inserts one row into the `applications` table (data-model.md). Called once, from
   `submit-application/route.ts`, immediately after the `SubmitApplication` event is successfully
   appended.
+- `close`: ends the index's own connection pool (added during implementation — needed by tests
+  that create short-lived `ApplicationIndex` instances against a container that then gets torn
+  down; the running server never calls it, since its one index lives for the process's lifetime).
 - `list`: returns every known `applicationId`, across the table's full history — including
   applications created in a previous run of the process (spec.md FR-005), which is exactly what
   the old in-memory registry could never do.

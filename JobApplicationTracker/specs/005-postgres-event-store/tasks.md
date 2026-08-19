@@ -19,11 +19,11 @@ then a verification-focused phase per user story.
 
 ## Phase 1: Setup (Shared Infrastructure)
 
-- [ ] T001 Add `@event-driven-io/emmett-postgresql` (dependency) and
+- [X] T001 Add `@event-driven-io/emmett-postgresql` (dependency) and
       `@event-driven-io/emmett-testcontainers` (dev dependency) to `package.json`; `npm install`
-- [ ] T002 [P] Create `docker-compose.yml` at the repo root: a local Postgres service for
+- [X] T002 [P] Create `docker-compose.yml` at the repo root: a local Postgres service for
       development (spec.md Assumptions)
-- [ ] T003 [P] Create `.env.example` documenting `DATABASE_URL`
+- [X] T003 [P] Create `.env.example` documenting `DATABASE_URL`
 
 ---
 
@@ -34,36 +34,36 @@ then a verification-focused phase per user story.
 
 **⚠️ CRITICAL**: No user story verification can begin until this phase is complete
 
-- [ ] T004 [P] Create `vitest.setup.ts`: global setup starts one shared Postgres container via
+- [X] T004 [P] Create `vitest.setup.ts`: global setup starts one shared Postgres container via
       `@event-driven-io/emmett-testcontainers`'s `getPostgreSQLStartedContainer()`, runs
       `schema.migrate()` once, sets `process.env.DATABASE_URL`; teardown stops the container
       (research.md)
-- [ ] T005 Register `vitest.setup.ts` as `globalSetup` in `vitest.config.ts` (depends on T004)
-- [ ] T006 [P] `event-store.spec.ts` in `src/store/event-store.spec.ts`: `createEventStore()`
+- [X] T005 Register `vitest.setup.ts` as `globalSetup` in `vitest.config.ts` (depends on T004)
+- [X] T006 [P] `event-store.spec.ts` in `src/store/event-store.spec.ts`: `createEventStore()`
       throws clearly when `DATABASE_URL` is unset; `migrateEventStoreSchema()` succeeds against a
       fresh schema — write first
-- [ ] T007 Implement `src/store/event-store.ts` per contracts/module-contracts.md:
+- [X] T007 Implement `src/store/event-store.ts` per contracts/module-contracts.md:
       `createEventStore()` reads `DATABASE_URL` and calls `getPostgreSQLEventStore(...)`;
       `migrateEventStoreSchema(store)` calls `store.schema.migrate()` (depends on T006)
-- [ ] T008 [P] `application-index.spec.ts` in `src/store/application-index.spec.ts`:
+- [X] T008 [P] `application-index.spec.ts` in `src/store/application-index.spec.ts`:
       `register()`/`list()` round-trip; a *second* `createApplicationIndex()` instance against the
       same store sees data written by the first (the automatable proxy for "survives a restart",
       per quickstart.md) — write first
-- [ ] T009 Implement `src/store/application-index.ts` per contracts/module-contracts.md, backed
+- [X] T009 Implement `src/store/application-index.ts` per contracts/module-contracts.md, backed
       by the `applications` table from data-model.md (depends on T008, T007)
-- [ ] T010 Update `src/http/server.ts`: call `migrateEventStoreSchema()` before `startAPI(app)`;
+- [X] T010 Update `src/http/server.ts`: call `migrateEventStoreSchema()` before `startAPI(app)`;
       on failure, log clearly and exit non-zero (spec.md FR-008; depends on T007)
-- [ ] T011 Update `src/http/app.ts`: remove the `application-registry.ts` import/decoration;
+- [X] T011 Update `src/http/app.ts`: remove the `application-registry.ts` import/decoration;
       decorate `applicationIndex` via `createApplicationIndex(eventStore)` instead (depends on
       T009)
-- [ ] T012 Delete `src/http/application-registry.ts` (superseded, per constitution — no dead code
+- [X] T012 Delete `src/http/application-registry.ts` (superseded, per constitution — no dead code
       left behind)
-- [ ] T013 Update `src/slices/submit-application/route.ts`: `app.applicationRegistry.register(...)`
+- [X] T013 Update `src/slices/submit-application/route.ts`: `app.applicationRegistry.register(...)`
       → `await app.applicationIndex.register(...)` (depends on T011)
-- [ ] T014 Update `src/read-models/active-pipeline/route.ts`: `app.applicationRegistry.list()` →
+- [X] T014 Update `src/read-models/active-pipeline/route.ts`: `app.applicationRegistry.list()` →
       `await app.applicationIndex.list()` (depends on T011)
-- [ ] T015 Update `src/reactors/ghosting/route.ts`: same rename + `await` (depends on T011)
-- [ ] T016 Update `src/read-models/active-pipeline/route.spec.ts` and
+- [X] T015 Update `src/reactors/ghosting/route.ts`: same rename + `await` (depends on T011)
+- [X] T016 Update `src/read-models/active-pipeline/route.spec.ts` and
       `src/reactors/ghosting/route.spec.ts`: add a `beforeEach` that truncates the database (via
       `store.schema.dangerous.truncate()` and the `applications` table) — these are the tests
       whose assertions depend on the store's full contents (research.md's isolation decision)
@@ -79,12 +79,12 @@ then a verification-focused phase per user story.
 **Independent Test**: quickstart.md's manual walkthrough — stop and restart the real server,
 confirm every application's full state is unchanged.
 
-- [ ] T017 [P] [US1] Integration test (e.g. `src/store/durability.spec.ts`): build one app
+- [X] T017 [P] [US1] Integration test (e.g. `src/store/durability.spec.ts`): build one app
       instance, submit and progress an application, then build a *second*, independent app
       instance against the same `DATABASE_URL` (simulating a restart without an OS-level process
       restart) and confirm `GET /applications/:id` and `GET /applications/active` on the second
       instance reflect exactly what the first instance wrote
-- [ ] T018 [US1] Run quickstart.md's manual restart walkthrough against a real `npm run start`
+- [X] T018 [US1] Run quickstart.md's manual restart walkthrough against a real `npm run start`
       process — the proof T017's simulation can't fully substitute for
 
 **Checkpoint**: User Story 1 verified both automatically (T017) and manually (T018)
@@ -97,10 +97,10 @@ confirm every application's full state is unchanged.
 
 **Independent Test**: quickstart.md's manual two-database walkthrough.
 
-- [ ] T019 [P] [US2] Integration test: two `createEventStore()`/`createApplicationIndex()` pairs
+- [X] T019 [P] [US2] Integration test: two `createEventStore()`/`createApplicationIndex()` pairs
       built against two different databases (e.g. two databases within the same shared Postgres
       instance) write and read independently, with no cross-contamination
-- [ ] T020 [US2] Run quickstart.md's manual walkthrough: change `DATABASE_URL` in `.env`, restart
+- [X] T020 [US2] Run quickstart.md's manual walkthrough: change `DATABASE_URL` in `.env`, restart
       `npm run start`, confirm the overview reflects the *new* database (empty), not the old one
 
 **Checkpoint**: Both user stories verified
@@ -109,11 +109,11 @@ confirm every application's full state is unchanged.
 
 ## Phase 5: Polish & Cross-Cutting Concerns
 
-- [ ] T021 Run the full `npm test` suite and confirm zero regressions across every existing test
+- [X] T021 Run the full `npm test` suite and confirm zero regressions across every existing test
       (features 001–004) now running against real Postgres (spec.md SC-002)
-- [ ] T022 [P] Verify `src/http/application-registry.ts` no longer exists and nothing references
+- [X] T022 [P] Verify `src/http/application-registry.ts` no longer exists and nothing references
       it (`grep -r applicationRegistry src/`)
-- [ ] T023 [P] Update `docs/BRIEF.md`'s Status section and `docs/ADRs.md` (ADR 1's "Postgres once
+- [X] T023 [P] Update `docs/BRIEF.md`'s Status section and `docs/ADRs.md` (ADR 1's "Postgres once
       the logic is solid" is now fulfilled) noting feature 005 is complete
 
 ---

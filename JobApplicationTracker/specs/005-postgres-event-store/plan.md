@@ -20,12 +20,14 @@ route, or frontend contract changes — this is a storage-layer swap only (spec.
 **Primary Dependencies**: `@event-driven-io/emmett-postgresql` (runtime — provides
 `getPostgreSQLEventStore`, whose `PostgresEventStore` implements the same `EventStore` interface
 `InMemoryEventStore` already did, so `aggregateStream`/`readStream`/`appendToStream` call sites in
-existing routes need no changes). `@event-driven-io/emmett-testcontainers` (dev-only — spins up a
-real, ephemeral Postgres for automated tests; this is the same tool Emmett's own test suite uses,
-per inspecting the published package). No new dependency for our own SQL — `pg` is pulled in
-transitively by `@event-driven-io/emmett-postgresql`'s own dependency chain, but we only ever call
-`getPostgreSQLEventStore(connectionString)` with a connection string, never construct a `pg.Pool`
-ourselves.
+existing routes need no changes). `@testcontainers/postgresql` (dev-only — spins up a real,
+ephemeral Postgres for automated tests; switched to this from the originally-planned
+`@event-driven-io/emmett-testcontainers` wrapper during implementation, per research.md, after
+that wrapper's build turned out to crash on an undeclared dependency). `pg` (runtime) and
+`@types/pg` (dev) — added as direct
+dependencies rather than relying on `@event-driven-io/emmett-postgresql`'s transitive copy, since
+`application-index.ts` runs its own SQL directly against the `applications` table (data-model.md),
+independent of Emmett's own internal connection handling (research.md).
 
 **Storage**: Postgres, connected via `DATABASE_URL`. Schema migration via the store's own
 `schema.migrate()`, called explicitly at server startup (`src/http/server.ts`) before serving any

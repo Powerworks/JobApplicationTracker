@@ -1,6 +1,9 @@
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { buildApp } from "../../http/app.js";
+import { resetDatabaseForTests } from "../../store/testing.js";
 import { SILENCE_PERIOD_DAYS } from "./reactor.js";
+
+beforeEach(resetDatabaseForTests);
 
 const submitApplication = async (app: Awaited<ReturnType<typeof buildApp>>) => {
   const response = await app.inject({
