@@ -31,4 +31,22 @@ describe("POST /applications", () => {
     expect(response.statusCode).toBe(400);
     expect(response.json()).toHaveProperty("error", "InvalidRequest");
   });
+
+  it("rejects a request with an empty-string company (400)", async () => {
+    const app = await buildApp();
+    const response = await app.inject({
+      method: "POST",
+      url: "/applications",
+      payload: {
+        company: "",
+        role: "Engineer",
+        location: "Remote",
+        employmentType: "Permanent",
+        benefits: [],
+      },
+    });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.json()).toHaveProperty("error", "InvalidRequest");
+  });
 });
