@@ -11,8 +11,8 @@ const bodySchema = {
   type: "object",
   required: ["company", "role", "location", "employmentType", "benefits"],
   properties: {
-    company: { type: "string" },
-    role: { type: "string" },
+    company: { type: "string", minLength: 1 },
+    role: { type: "string", minLength: 1 },
     location: { type: "string" },
     salary: {
       type: "object",
